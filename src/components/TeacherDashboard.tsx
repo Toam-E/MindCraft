@@ -41,7 +41,7 @@ const TeacherDashboard = ({ mode, onBack }: TeacherDashboardProps) => {
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Home
-            </div>
+            </Button>
             
             <div className="text-white text-center">
               <h1 className="text-2xl font-bold">Teacher Dashboard</h1>
