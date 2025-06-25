@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AgeGroupSelection from './AgeGroupSelection';
 import SubjectSelection from './SubjectSelection';
 import MathGame from './MathGame';
+import WordMatchGame from './WordMatchGame';
+import MathMazeGame from './MathMazeGame';
 
 interface StudentDashboardProps {
   mode: 'private' | 'school' | null;
@@ -15,11 +17,13 @@ interface StudentDashboardProps {
 
 export type AgeGroup = '5-6' | '7-8' | '9-10' | '11-12' | null;
 export type Subject = 'math' | 'english' | null;
+export type GameType = 'quiz' | 'word-match' | 'math-maze' | null;
 
 const StudentDashboard = ({ mode, role, onBack }: StudentDashboardProps) => {
   const [selectedAge, setSelectedAge] = useState<AgeGroup>(null);
   const [selectedSubject, setSelectedSubject] = useState<Subject>(null);
-  const [currentView, setCurrentView] = useState<'age' | 'subject' | 'game'>('age');
+  const [selectedGame, setSelectedGame] = useState<GameType>(null);
+  const [currentView, setCurrentView] = useState<'age' | 'subject' | 'game-select' | 'game'>('age');
 
   const handleAgeSelect = (age: AgeGroup) => {
     setSelectedAge(age);
@@ -28,6 +32,11 @@ const StudentDashboard = ({ mode, role, onBack }: StudentDashboardProps) => {
 
   const handleSubjectSelect = (subject: Subject) => {
     setSelectedSubject(subject);
+    setCurrentView('game-select');
+  };
+
+  const handleGameSelect = (game: GameType) => {
+    setSelectedGame(game);
     setCurrentView('game');
   };
 
@@ -35,11 +44,18 @@ const StudentDashboard = ({ mode, role, onBack }: StudentDashboardProps) => {
     setCurrentView('age');
     setSelectedAge(null);
     setSelectedSubject(null);
+    setSelectedGame(null);
   };
 
   const resetToSubjectSelection = () => {
     setCurrentView('subject');
     setSelectedSubject(null);
+    setSelectedGame(null);
+  };
+
+  const resetToGameSelection = () => {
+    setCurrentView('game-select');
+    setSelectedGame(null);
   };
 
   return (
@@ -88,31 +104,106 @@ const StudentDashboard = ({ mode, role, onBack }: StudentDashboardProps) => {
           />
         )}
 
-        {currentView === 'game' && selectedSubject === 'math' && (
+        {currentView === 'game-select' && (
+          <div className="max-w-5xl mx-auto">
+            <div className="flex items-center gap-4 mb-8">
+              <Button 
+                variant="ghost" 
+                onClick={resetToSubjectSelection}
+                className="text-white hover:bg-white/20 flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back
+              </Button>
+            </div>
+
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-white mb-4 drop-shadow-lg">
+                Choose Your Game!
+              </h2>
+              <p className="text-xl text-white/90 drop-shadow-md">
+                Ages {selectedAge} • {selectedSubject === 'math' ? 'Math' : 'English'} Games
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {selectedSubject === 'math' ? (
+                <>
+                  <Card 
+                    className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer group"
+                    onClick={() => handleGameSelect('quiz')}
+                  >
+                    <CardHeader className="text-center pb-6">
+                      <div className="mx-auto w-24 h-24 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mb-4 text-5xl group-hover:animate-bounce">
+                        🧮
+                      </div>
+                      <CardTitle className="text-2xl text-gray-800 mb-2">
+                        Math Quiz
+                      </CardTitle>
+                      <p className="text-gray-600">
+                        Answer math questions and improve your skills!
+                      </p>
+                    </CardHeader>
+                  </Card>
+
+                  <Card 
+                    className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer group"
+                    onClick={() => handleGameSelect('math-maze')}
+                  >
+                    <CardHeader className="text-center pb-6">
+                      <div className="mx-auto w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mb-4 text-5xl group-hover:animate-bounce">
+                        🎯
+                      </div>
+                      <CardTitle className="text-2xl text-gray-800 mb-2">
+                        Math Maze
+                      </CardTitle>
+                      <p className="text-gray-600">
+                        Solve problems to unlock your path to treasure!
+                      </p>
+                    </CardHeader>
+                  </Card>
+                </>
+              ) : (
+                <Card 
+                  className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer group"
+                  onClick={() => handleGameSelect('word-match')}
+                >
+                  <CardHeader className="text-center pb-6">
+                    <div className="mx-auto w-24 h-24 bg-gradient-to-br from-green-500 to-teal-500 rounded-full flex items-center justify-center mb-4 text-5xl group-hover:animate-bounce">
+                      🎯
+                    </div>
+                    <CardTitle className="text-2xl text-gray-800 mb-2">
+                      Word Match
+                    </CardTitle>
+                    <p className="text-gray-600">
+                      Match words with their pictures!
+                    </p>
+                  </CardHeader>
+                </Card>
+              )}
+            </div>
+          </div>
+        )}
+
+        {currentView === 'game' && selectedGame === 'quiz' && selectedSubject === 'math' && (
           <MathGame 
             ageGroup={selectedAge}
-            onBack={resetToSubjectSelection}
+            onBack={resetToGameSelection}
           />
         )}
 
-        {currentView === 'game' && selectedSubject === 'english' && (
-          <div className="text-center">
-            <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl max-w-md mx-auto">
-              <CardHeader>
-                <CardTitle className="text-2xl text-green-600">
-                  📚 English Adventures
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">
-                  English games are coming soon! For now, try our Math Adventures.
-                </p>
-                <Button onClick={resetToSubjectSelection}>
-                  Choose Another Subject
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+        {currentView === 'game' && selectedGame === 'word-match' && selectedSubject === 'english' && (
+          <WordMatchGame 
+            ageGroup={selectedAge}
+            onBack={resetToGameSelection}
+          />
+        )}
+
+        {currentView === 'game' && selectedGame === 'math-maze' && selectedSubject === 'math' && (
+          <MathMazeGame 
+            ageGroup={selectedAge}
+            onBack={resetToGameSelection}
+          />
         )}
       </div>
     </div>

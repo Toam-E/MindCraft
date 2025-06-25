@@ -1,10 +1,10 @@
 
 import { useState } from 'react';
-import { Users, User, BookOpen, Calculator } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import ModeSelection from '@/components/ModeSelection';
 import StudentDashboard from '@/components/StudentDashboard';
+import TeacherDashboard from '@/components/TeacherDashboard';
+import ParentDashboard from '@/components/ParentDashboard';
 
 export type UserMode = 'private' | 'school' | null;
 export type UserRole = 'student' | 'parent' | 'teacher' | null;
@@ -16,11 +16,16 @@ const Index = () => {
 
   const handleModeSelect = (mode: UserMode) => {
     setSelectedMode(mode);
+    // For private mode, default to student role
+    if (mode === 'private') {
+      setUserRole('student');
+    }
     setCurrentView('dashboard');
   };
 
   const handleRoleSelect = (role: UserRole) => {
     setUserRole(role);
+    setCurrentView('dashboard');
   };
 
   const resetToWelcome = () => {
@@ -30,13 +35,29 @@ const Index = () => {
   };
 
   if (currentView === 'dashboard') {
-    return (
-      <StudentDashboard 
-        mode={selectedMode}
-        role={userRole}
-        onBack={resetToWelcome}
-      />
-    );
+    if (userRole === 'teacher') {
+      return (
+        <TeacherDashboard 
+          mode={selectedMode}
+          onBack={resetToWelcome}
+        />
+      );
+    } else if (userRole === 'parent') {
+      return (
+        <ParentDashboard 
+          mode={selectedMode}
+          onBack={resetToWelcome}
+        />
+      );
+    } else {
+      return (
+        <StudentDashboard 
+          mode={selectedMode}
+          role={userRole}
+          onBack={resetToWelcome}
+        />
+      );
+    }
   }
 
   return (
@@ -61,34 +82,7 @@ const Index = () => {
         </div>
 
         {/* Mode Selection */}
-        <ModeSelection onModeSelect={handleModeSelect} />
-
-        {/* Features Preview */}
-        <div className="mt-16 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl hover:scale-105 transition-transform duration-300">
-            <CardHeader className="text-center">
-              <div className="mx-auto w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mb-4">
-                <Calculator className="w-8 h-8 text-white" />
-              </div>
-              <CardTitle className="text-2xl text-blue-600">Math Adventures</CardTitle>
-              <CardDescription className="text-lg">
-                Solve puzzles, play number games, and master math skills!
-              </CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl hover:scale-105 transition-transform duration-300">
-            <CardHeader className="text-center">
-              <div className="mx-auto w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-4">
-                <BookOpen className="w-8 h-8 text-white" />
-              </div>
-              <CardTitle className="text-2xl text-green-600">English Quests</CardTitle>
-              <CardDescription className="text-lg">
-                Build vocabulary, improve spelling, and become a word wizard!
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
+        <ModeSelection onModeSelect={handleModeSelect} onRoleSelect={handleRoleSelect} />
       </div>
     </div>
   );
