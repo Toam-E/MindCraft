@@ -74,7 +74,7 @@ const Index = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-6xl font-bold text-white mb-4 drop-shadow-lg">
-            🎓 LearnFun Academy
+            🧠 MindCraft
           </h1>
           <p className="text-2xl text-white/90 font-medium drop-shadow-md">
             Where Learning Meets Adventure!
