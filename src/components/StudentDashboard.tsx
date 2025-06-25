@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AgeGroupSelection from './AgeGroupSelection';
 import SubjectSelection from './SubjectSelection';
-import ThemeCustomization, { StudentTheme } from './ThemeCustomization';
+import { StudentTheme } from './ThemeCustomization';
 import MathGame from './MathGame';
 import WordMatchGame from './WordMatchGame';
 import MathMazeGame from './MathMazeGame';
@@ -13,30 +13,20 @@ import MathMazeGame from './MathMazeGame';
 interface StudentDashboardProps {
   mode: 'private' | 'school' | null;
   role: 'student' | 'parent' | 'teacher' | null;
+  theme: StudentTheme;
   onBack: () => void;
+  onThemeChange: () => void;
 }
 
 export type AgeGroup = '5-6' | '7-8' | '9-10' | '11-12' | null;
 export type Subject = 'math' | 'english' | null;
 export type GameType = 'quiz' | 'word-match' | 'math-maze' | null;
 
-const defaultTheme: StudentTheme = {
-  gradientColors: ['#3B82F6', '#8B5CF6', '#EC4899'],
-  themeEmoji: '🎓',
-  themeName: 'Learning'
-};
-
-const StudentDashboard = ({ mode, role, onBack }: StudentDashboardProps) => {
+const StudentDashboard = ({ mode, role, theme, onBack, onThemeChange }: StudentDashboardProps) => {
   const [selectedAge, setSelectedAge] = useState<AgeGroup>(null);
   const [selectedSubject, setSelectedSubject] = useState<Subject>(null);
   const [selectedGame, setSelectedGame] = useState<GameType>(null);
-  const [studentTheme, setStudentTheme] = useState<StudentTheme>(defaultTheme);
-  const [currentView, setCurrentView] = useState<'theme' | 'age' | 'subject' | 'game-select' | 'game'>('theme');
-
-  const handleThemeComplete = (theme: StudentTheme) => {
-    setStudentTheme(theme);
-    setCurrentView('age');
-  };
+  const [currentView, setCurrentView] = useState<'age' | 'subject' | 'game-select' | 'game'>('age');
 
   const handleAgeSelect = (age: AgeGroup) => {
     setSelectedAge(age);
@@ -51,13 +41,6 @@ const StudentDashboard = ({ mode, role, onBack }: StudentDashboardProps) => {
   const handleGameSelect = (game: GameType) => {
     setSelectedGame(game);
     setCurrentView('game');
-  };
-
-  const resetToTheme = () => {
-    setCurrentView('theme');
-    setSelectedAge(null);
-    setSelectedSubject(null);
-    setSelectedGame(null);
   };
 
   const resetToAgeSelection = () => {
@@ -79,43 +62,67 @@ const StudentDashboard = ({ mode, role, onBack }: StudentDashboardProps) => {
   };
 
   const backgroundStyle = {
-    background: `linear-gradient(135deg, ${studentTheme.gradientColors[0]}, ${studentTheme.gradientColors[1]}, ${studentTheme.gradientColors[2]})`
+    background: `linear-gradient(135deg, ${theme.gradientColors[0]}, ${theme.gradientColors[1]}, ${theme.gradientColors[2]})`
   };
 
-  // Theme decorations based on selected theme
+  // Enhanced theme decorations - more icons scattered across the screen
   const getThemeDecorations = () => {
     const decorations = {
-      'Unicorns': ['🌈', '⭐', '✨', '🦄'],
-      'Dinosaurs': ['🌋', '🦴', '🌿', '🦕'],
-      'Space': ['🌟', '🪐', '👽', '🚀'],
-      'Ocean': ['🌊', '🐙', '🦑', '🐠'],
-      'Princess': ['💎', '🏰', '🌸', '👸'],
-      'Animals': ['🦁', '🐼', '🦊', '🐨']
+      'Unicorns': ['🌈', '⭐', '✨', '🦄', '💫', '🌟'],
+      'Dinosaurs': ['🌋', '🦴', '🌿', '🦕', '🦖', '🌱'],
+      'Space': ['🌟', '🪐', '👽', '🚀', '🛸', '⭐'],
+      'Ocean': ['🌊', '🐙', '🦑', '🐠', '🐟', '🦈'],
+      'Princess': ['💎', '🏰', '🌸', '👸', '👑', '💖'],
+      'Animals': ['🦁', '🐼', '🦊', '🐨', '🐯', '🦒']
     };
-    return decorations[studentTheme.themeName as keyof typeof decorations] || ['⭐', '✨', '🌟'];
+    return decorations[theme.themeName as keyof typeof decorations] || ['⭐', '✨', '🌟'];
   };
-
-  if (currentView === 'theme') {
-    return (
-      <ThemeCustomization 
-        onComplete={handleThemeComplete}
-        onBack={onBack}
-      />
-    );
-  }
 
   return (
     <div className="min-h-screen" style={backgroundStyle}>
-      {/* Theme decorations */}
+      {/* Enhanced theme decorations - more scattered across the screen */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Primary layer of decorations */}
         {getThemeDecorations().map((decoration, index) => (
           <div
-            key={index}
-            className="absolute text-4xl opacity-20 animate-pulse"
+            key={`primary-${index}`}
+            className="absolute text-6xl opacity-20 animate-pulse"
             style={{
-              top: `${15 + index * 20}%`,
-              left: `${5 + index * 25}%`,
+              top: `${10 + index * 15}%`,
+              left: `${5 + index * 15}%`,
               animationDelay: `${index * 0.8}s`
+            }}
+          >
+            {decoration}
+          </div>
+        ))}
+        
+        {/* Secondary layer for more coverage */}
+        {getThemeDecorations().map((decoration, index) => (
+          <div
+            key={`secondary-${index}`}
+            className="absolute text-4xl opacity-15 animate-bounce"
+            style={{
+              top: `${20 + index * 12}%`,
+              right: `${10 + index * 12}%`,
+              animationDelay: `${index * 1.2}s`,
+              animationDuration: '3s'
+            }}
+          >
+            {decoration}
+          </div>
+        ))}
+
+        {/* Tertiary layer for even more playful feel */}
+        {getThemeDecorations().slice(0, 4).map((decoration, index) => (
+          <div
+            key={`tertiary-${index}`}
+            className="absolute text-5xl opacity-10 animate-pulse"
+            style={{
+              bottom: `${15 + index * 18}%`,
+              left: `${20 + index * 20}%`,
+              animationDelay: `${index * 1.5}s`,
+              animationDuration: '4s'
             }}
           >
             {decoration}
@@ -147,7 +154,7 @@ const StudentDashboard = ({ mode, role, onBack }: StudentDashboardProps) => {
               </div>
               <Button 
                 variant="ghost" 
-                onClick={resetToTheme}
+                onClick={onThemeChange}
                 className="text-white hover:bg-white/20 flex items-center gap-2"
               >
                 <Settings className="w-4 h-4" />
@@ -190,7 +197,7 @@ const StudentDashboard = ({ mode, role, onBack }: StudentDashboardProps) => {
 
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold text-white mb-4 drop-shadow-lg flex items-center justify-center gap-4">
-                <span className="text-6xl">{studentTheme.themeEmoji}</span>
+                <span className="text-6xl">{theme.themeEmoji}</span>
                 Choose Your Game!
               </h2>
               <p className="text-xl text-white/90 drop-shadow-md">

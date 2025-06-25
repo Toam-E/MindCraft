@@ -5,26 +5,43 @@ import ModeSelection from '@/components/ModeSelection';
 import StudentDashboard from '@/components/StudentDashboard';
 import TeacherDashboard from '@/components/TeacherDashboard';
 import ParentDashboard from '@/components/ParentDashboard';
+import ThemeCustomization, { StudentTheme } from '@/components/ThemeCustomization';
 
 export type UserMode = 'private' | 'school' | null;
 export type UserRole = 'student' | 'parent' | 'teacher' | null;
 
+const defaultTheme: StudentTheme = {
+  gradientColors: ['#3B82F6', '#8B5CF6', '#EC4899'],
+  themeEmoji: '🎓',
+  themeName: 'Learning'
+};
+
 const Index = () => {
   const [selectedMode, setSelectedMode] = useState<UserMode>(null);
   const [userRole, setUserRole] = useState<UserRole>(null);
-  const [currentView, setCurrentView] = useState<'welcome' | 'dashboard'>('welcome');
+  const [studentTheme, setStudentTheme] = useState<StudentTheme>(defaultTheme);
+  const [currentView, setCurrentView] = useState<'welcome' | 'theme' | 'dashboard'>('welcome');
 
   const handleModeSelect = (mode: UserMode) => {
     setSelectedMode(mode);
     // For private mode, default to student role
     if (mode === 'private') {
       setUserRole('student');
+      setCurrentView('theme');
     }
-    setCurrentView('dashboard');
   };
 
   const handleRoleSelect = (role: UserRole) => {
     setUserRole(role);
+    if (role === 'student') {
+      setCurrentView('theme');
+    } else {
+      setCurrentView('dashboard');
+    }
+  };
+
+  const handleThemeComplete = (theme: StudentTheme) => {
+    setStudentTheme(theme);
     setCurrentView('dashboard');
   };
 
@@ -33,6 +50,19 @@ const Index = () => {
     setUserRole(null);
     setCurrentView('welcome');
   };
+
+  const resetToTheme = () => {
+    setCurrentView('theme');
+  };
+
+  if (currentView === 'theme' && userRole === 'student') {
+    return (
+      <ThemeCustomization 
+        onComplete={handleThemeComplete}
+        onBack={resetToWelcome}
+      />
+    );
+  }
 
   if (currentView === 'dashboard') {
     if (userRole === 'teacher') {
@@ -54,7 +84,9 @@ const Index = () => {
         <StudentDashboard 
           mode={selectedMode}
           role={userRole}
+          theme={studentTheme}
           onBack={resetToWelcome}
+          onThemeChange={resetToTheme}
         />
       );
     }
