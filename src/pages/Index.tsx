@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import ModeSelection from '@/components/ModeSelection';
+
 import StudentDashboard from '@/components/StudentDashboard';
 import TeacherDashboard from '@/components/TeacherDashboard';
 import ParentDashboard from '@/components/ParentDashboard';
@@ -18,27 +18,13 @@ const defaultTheme: StudentTheme = {
 };
 
 const Index = () => {
-  const [selectedMode, setSelectedMode] = useState<UserMode>(null);
-  const [userRole, setUserRole] = useState<UserRole>(null);
+  const [selectedMode, setSelectedMode] = useState<UserMode>('private');
+  const [userRole, setUserRole] = useState<UserRole>('student');
   const [studentTheme, setStudentTheme] = useState<StudentTheme>(defaultTheme);
   const [currentView, setCurrentView] = useState<'welcome' | 'theme' | 'dashboard'>('welcome');
 
-  const handleModeSelect = (mode: UserMode) => {
-    setSelectedMode(mode);
-    // For private mode, default to student role
-    if (mode === 'private') {
-      setUserRole('student');
-      setCurrentView('theme');
-    }
-  };
-
-  const handleRoleSelect = (role: UserRole) => {
-    setUserRole(role);
-    if (role === 'student') {
-      setCurrentView('theme');
-    } else {
-      setCurrentView('dashboard');
-    }
+  const handleStart = () => {
+    setCurrentView('theme');
   };
 
   const handleTopNavModeChange = (mode: UserMode) => {
@@ -64,8 +50,8 @@ const Index = () => {
   };
 
   const resetToWelcome = () => {
-    setSelectedMode(null);
-    setUserRole(null);
+    setSelectedMode('private');
+    setUserRole('student');
     setCurrentView('welcome');
   };
 
@@ -287,8 +273,15 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Mode Selection */}
-        <ModeSelection onModeSelect={handleModeSelect} onRoleSelect={handleRoleSelect} />
+        {/* Start Button */}
+        <div className="text-center">
+          <Button 
+            onClick={handleStart}
+            className="bg-white text-gray-800 hover:bg-white/90 text-3xl px-12 py-6 rounded-full font-bold shadow-2xl"
+          >
+            Let's Go! 🚀
+          </Button>
+        </div>
       </div>
     </div>
   );
