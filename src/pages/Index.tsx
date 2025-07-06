@@ -6,6 +6,7 @@ import StudentDashboard from '@/components/StudentDashboard';
 import TeacherDashboard from '@/components/TeacherDashboard';
 import ParentDashboard from '@/components/ParentDashboard';
 import ThemeCustomization, { StudentTheme } from '@/components/ThemeCustomization';
+import TopNavigation from '@/components/TopNavigation';
 
 export type UserMode = 'private' | 'school' | null;
 export type UserRole = 'student' | 'parent' | 'teacher' | null;
@@ -40,6 +41,23 @@ const Index = () => {
     }
   };
 
+  const handleTopNavModeChange = (mode: UserMode) => {
+    setSelectedMode(mode);
+  };
+
+  const handleTopNavRoleChange = (role: UserRole) => {
+    setUserRole(role);
+    if (role === 'student') {
+      setCurrentView('dashboard');
+    } else {
+      setCurrentView('dashboard');
+    }
+  };
+
+  const handleTopNavThemeCustomization = () => {
+    setCurrentView('theme');
+  };
+
   const handleThemeComplete = (theme: StudentTheme) => {
     setStudentTheme(theme);
     setCurrentView('dashboard');
@@ -55,39 +73,195 @@ const Index = () => {
     setCurrentView('theme');
   };
 
-  if (currentView === 'theme' && userRole === 'student') {
+  // Create background style based on theme
+  const backgroundStyle = {
+    background: `linear-gradient(135deg, ${studentTheme.gradientColors[0]}, ${studentTheme.gradientColors[1]}, ${studentTheme.gradientColors[2]})`
+  };
+
+  // Get theme decorations for background
+  const getThemeDecorations = () => {
+    const decorations = {
+      'Unicorns': ['🌈', '⭐', '✨', '🦄', '💫', '🌟'],
+      'Dinosaurs': ['🌋', '🦴', '🌿', '🦕', '🦖', '🌱'],
+      'Space': ['🌟', '🪐', '👽', '🚀', '🛸', '⭐'],
+      'Ocean': ['🌊', '🐙', '🦑', '🐠', '🐟', '🦈'],
+      'Princess': ['💎', '🏰', '🌸', '👸', '👑', '💖'],
+      'Animals': ['🦁', '🐼', '🦊', '🐨', '🐯', '🦒']
+    };
+    return decorations[studentTheme.themeName as keyof typeof decorations] || ['⭐', '✨', '🌟'];
+  };
+
+  if (currentView === 'theme') {
     return (
-      <ThemeCustomization 
-        onComplete={handleThemeComplete}
-        onBack={resetToWelcome}
-      />
+      <div className="min-h-screen" style={backgroundStyle}>
+        {/* Theme decorations */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {getThemeDecorations().map((decoration, index) => (
+            <div
+              key={`primary-${index}`}
+              className="absolute text-6xl opacity-20 animate-pulse"
+              style={{
+                top: `${10 + index * 15}%`,
+                left: `${5 + index * 15}%`,
+                animationDelay: `${index * 0.8}s`
+              }}
+            >
+              {decoration}
+            </div>
+          ))}
+          {getThemeDecorations().map((decoration, index) => (
+            <div
+              key={`secondary-${index}`}
+              className="absolute text-4xl opacity-15 animate-bounce"
+              style={{
+                top: `${20 + index * 12}%`,
+                right: `${10 + index * 12}%`,
+                animationDelay: `${index * 1.2}s`,
+                animationDuration: '3s'
+              }}
+            >
+              {decoration}
+            </div>
+          ))}
+        </div>
+
+        <TopNavigation
+          currentMode={selectedMode}
+          currentRole={userRole}
+          onModeChange={handleTopNavModeChange}
+          onRoleChange={handleTopNavRoleChange}
+          onThemeCustomization={handleTopNavThemeCustomization}
+          showThemeButton={false}
+        />
+        
+        <ThemeCustomization 
+          onComplete={handleThemeComplete}
+          onBack={() => setCurrentView('dashboard')}
+          currentTheme={studentTheme}
+        />
+      </div>
     );
   }
 
   if (currentView === 'dashboard') {
     if (userRole === 'teacher') {
       return (
-        <TeacherDashboard 
-          mode={selectedMode}
-          onBack={resetToWelcome}
-        />
+        <div className="min-h-screen" style={backgroundStyle}>
+          {/* Theme decorations */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {getThemeDecorations().map((decoration, index) => (
+              <div
+                key={`primary-${index}`}
+                className="absolute text-6xl opacity-10 animate-pulse"
+                style={{
+                  top: `${10 + index * 15}%`,
+                  left: `${5 + index * 15}%`,
+                  animationDelay: `${index * 0.8}s`
+                }}
+              >
+                {decoration}
+              </div>
+            ))}
+          </div>
+
+          <TopNavigation
+            currentMode={selectedMode}
+            currentRole={userRole}
+            onModeChange={handleTopNavModeChange}
+            onRoleChange={handleTopNavRoleChange}
+            onThemeCustomization={handleTopNavThemeCustomization}
+          />
+          
+          <TeacherDashboard 
+            mode={selectedMode}
+            onBack={resetToWelcome}
+          />
+        </div>
       );
     } else if (userRole === 'parent') {
       return (
-        <ParentDashboard 
-          mode={selectedMode}
-          onBack={resetToWelcome}
-        />
+        <div className="min-h-screen" style={backgroundStyle}>
+          {/* Theme decorations */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {getThemeDecorations().map((decoration, index) => (
+              <div
+                key={`primary-${index}`}
+                className="absolute text-6xl opacity-10 animate-pulse"
+                style={{
+                  top: `${10 + index * 15}%`,
+                  left: `${5 + index * 15}%`,
+                  animationDelay: `${index * 0.8}s`
+                }}
+              >
+                {decoration}
+              </div>
+            ))}
+          </div>
+
+          <TopNavigation
+            currentMode={selectedMode}
+            currentRole={userRole}
+            onModeChange={handleTopNavModeChange}
+            onRoleChange={handleTopNavRoleChange}
+            onThemeCustomization={handleTopNavThemeCustomization}
+          />
+          
+          <ParentDashboard 
+            mode={selectedMode}
+            onBack={resetToWelcome}
+          />
+        </div>
       );
     } else {
       return (
-        <StudentDashboard 
-          mode={selectedMode}
-          role={userRole}
-          theme={studentTheme}
-          onBack={resetToWelcome}
-          onThemeChange={resetToTheme}
-        />
+        <div className="min-h-screen" style={backgroundStyle}>
+          {/* Theme decorations */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {getThemeDecorations().map((decoration, index) => (
+              <div
+                key={`primary-${index}`}
+                className="absolute text-6xl opacity-20 animate-pulse"
+                style={{
+                  top: `${10 + index * 15}%`,
+                  left: `${5 + index * 15}%`,
+                  animationDelay: `${index * 0.8}s`
+                }}
+              >
+                {decoration}
+              </div>
+            ))}
+            {getThemeDecorations().map((decoration, index) => (
+              <div
+                key={`secondary-${index}`}
+                className="absolute text-4xl opacity-15 animate-bounce"
+                style={{
+                  top: `${20 + index * 12}%`,
+                  right: `${10 + index * 12}%`,
+                  animationDelay: `${index * 1.2}s`,
+                  animationDuration: '3s'
+                }}
+              >
+                {decoration}
+              </div>
+            ))}
+          </div>
+
+          <TopNavigation
+            currentMode={selectedMode}
+            currentRole={userRole}
+            onModeChange={handleTopNavModeChange}
+            onRoleChange={handleTopNavRoleChange}
+            onThemeCustomization={handleTopNavThemeCustomization}
+          />
+          
+          <StudentDashboard 
+            mode={selectedMode}
+            role={userRole}
+            theme={studentTheme}
+            onBack={resetToWelcome}
+            onThemeChange={resetToTheme}
+          />
+        </div>
       );
     }
   }

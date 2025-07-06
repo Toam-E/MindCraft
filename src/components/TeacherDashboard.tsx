@@ -29,35 +29,7 @@ const TeacherDashboard = ({ mode, onBack }: TeacherDashboardProps) => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600">
-      {/* Header */}
-      <div className="bg-white/20 backdrop-blur-md border-b border-white/30">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Button 
-              variant="ghost" 
-              onClick={onBack}
-              className="text-white hover:bg-white/20 flex items-center gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Home
-            </Button>
-            
-            <div className="text-white text-center">
-              <h1 className="text-2xl font-bold">Teacher Dashboard</h1>
-              <p className="text-white/80">Grade 2A - Mrs. Johnson's Class</p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" className="text-white hover:bg-white/20">
-                <Settings className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation Tabs */}
+    <div className="flex-1">{/* Navigation Tabs */}
       <div className="bg-white/10 backdrop-blur-sm border-b border-white/20">
         <div className="container mx-auto px-4">
           <div className="flex gap-1">

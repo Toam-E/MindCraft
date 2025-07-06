@@ -79,7 +79,7 @@ const StudentDashboard = ({ mode, role, theme, onBack, onThemeChange }: StudentD
   };
 
   return (
-    <div className="min-h-screen" style={backgroundStyle}>
+    <div className="flex-1" style={backgroundStyle}>
       {/* Enhanced theme decorations - more scattered across the screen */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Primary layer of decorations */}
@@ -128,41 +128,6 @@ const StudentDashboard = ({ mode, role, theme, onBack, onThemeChange }: StudentD
             {decoration}
           </div>
         ))}
-      </div>
-
-      {/* Header */}
-      <div className="bg-white/20 backdrop-blur-md border-b border-white/30 relative z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Button 
-              variant="ghost" 
-              onClick={onBack}
-              className="text-white hover:bg-white/20 flex items-center gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Home
-            </Button>
-            
-            <div className="flex items-center gap-4 text-white">
-              <div className="flex items-center gap-2">
-                <Star className="w-5 h-5 text-yellow-300" />
-                <span className="font-semibold">125 Stars</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-orange-300" />
-                <span className="font-semibold">Level 3</span>
-              </div>
-              <Button 
-                variant="ghost" 
-                onClick={onThemeChange}
-                className="text-white hover:bg-white/20 flex items-center gap-2"
-              >
-                <Settings className="w-4 h-4" />
-                Theme
-              </Button>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Main Content */}

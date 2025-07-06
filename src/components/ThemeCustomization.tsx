@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 interface ThemeCustomizationProps {
   onComplete: (theme: StudentTheme) => void;
   onBack: () => void;
+  currentTheme?: StudentTheme;
 }
 
 export interface StudentTheme {
@@ -33,9 +34,13 @@ const themeOptions = [
   { name: 'Animals', emoji: '🐨', decorations: ['🦁', '🐼', '🦊'] }
 ];
 
-const ThemeCustomization = ({ onComplete, onBack }: ThemeCustomizationProps) => {
-  const [selectedColors, setSelectedColors] = useState<[string, string, string]>(colorOptions[0].colors);
-  const [selectedTheme, setSelectedTheme] = useState(themeOptions[0]);
+const ThemeCustomization = ({ onComplete, onBack, currentTheme }: ThemeCustomizationProps) => {
+  const [selectedColors, setSelectedColors] = useState<[string, string, string]>(
+    currentTheme?.gradientColors || colorOptions[0].colors
+  );
+  const [selectedTheme, setSelectedTheme] = useState(
+    currentTheme ? themeOptions.find(t => t.name === currentTheme.themeName) || themeOptions[0] : themeOptions[0]
+  );
 
   const handleComplete = () => {
     const theme: StudentTheme = {
@@ -51,7 +56,7 @@ const ThemeCustomization = ({ onComplete, onBack }: ThemeCustomizationProps) => 
   };
 
   return (
-    <div className="min-h-screen" style={gradientStyle}>
+    <div className="flex-1" style={gradientStyle}>
       {/* Decorative elements based on selected theme */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {selectedTheme.decorations.map((decoration, index) => (
